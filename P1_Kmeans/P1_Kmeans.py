@@ -5,7 +5,7 @@ from sklearn.datasets import make_blobs
 from kneed import KneeLocator
 from sklearn.metrics import silhouette_score
 
-### FUNCTIONS ###
+### RANDOM SEED ###
 np.random.seed(42)
 
 ### CLASE KMEANS from scratch ###
