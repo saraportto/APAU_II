@@ -5,9 +5,13 @@ from sklearn.datasets import make_blobs
 from kneed import KneeLocator
 from sklearn.metrics import silhouette_score
 
-### FUNCTIONS ###
+
+# ------------------------------------------------------------ #
+### SEED ###
 np.random.seed(42)
 
+
+# ------------------------------------------------------------ #
 ### CLASE KMEANS from scratch ###
 class KMeansScratch:
 
@@ -118,9 +122,11 @@ class KMeansScratch:
             self.centroids = new_centroids
 
         return labels
-    
 
-### FUNCIÓN ENCONTRAR NÚMERO ÓPTIMO DE CLUSTERS CON COEFICIENTE DE SILHOUETTE ###
+
+# ------------------------------------------------------------ #
+### FUNCIÓN para obtener el número óptimo de clusters ###
+# con coeficiente de silhouette
 def find_optimal_clusters_silhouette(X, max_k=10):
     '''
     X: Datos
@@ -151,9 +157,7 @@ def find_optimal_clusters_silhouette(X, max_k=10):
 
     return optimal_k
 
-
-### FUNCIÓN ENCONTRAR NÚMERO ÓPTIMO DE CLUSTERS CON ELBOW METHOD ###
-### FUNCIÓN PARA ENCONTRAR K ÓPTIMO - ELBOW METHOD ###
+# con método del codo
 def find_optimal_clusters_elbow(X, max_k=10):
     '''
     X: Datos
@@ -191,8 +195,9 @@ def find_optimal_clusters_elbow(X, max_k=10):
     return optimal_k
 
 
-### BUCLE PRINCIPAL ###
-if __name__ == '__main__':
+# ------------------------------------------------------------ #
+### MAIN ###
+if __name__ == "__main__":
     ## DATASET
     # Creación dataset
     X, y = make_blobs(n_samples=300, centers=4, cluster_std=0.60, random_state=0)
@@ -207,15 +212,18 @@ if __name__ == '__main__':
     plt.title("Dataset sintético")
     plt.show()
 
+
     ## ENCONTRAR K ÓPTIMO - SILHOUETTE SCORE
     optimal_k_silhouette = find_optimal_clusters_silhouette(X, max_k=10)
     print(f"K óptimo con Silhouette Score: {optimal_k_silhouette}")
+
 
     ## ENCONTRAR K ÓPTIMO - ELBOW METHOD
     optimal_k_elbow = find_optimal_clusters_elbow(X, max_k=10)
     print(f"K óptimo con Elbow Method: {optimal_k_elbow}")
 
-    ## KMEANS CON INICIALIZACIÓN DE CENTROIDES ALEATORIA Y K ÓPTIMO CON SILHOUETTE
+
+    ## KMEANS inicializado RANDOM
     # Modelo
     kmeans = KMeansScratch(n_clusters=optimal_k_silhouette, max_iter=100, init_method='random')
     labels = kmeans.fit(X)
@@ -227,7 +235,8 @@ if __name__ == '__main__':
     plt.title("K-Means from Scratch")
     plt.show()
 
-    ## KMEANS CON INICIALIZACIÓN DE CENTROIDES CON INSTANCIAS DEL DATASET Y K ÓPTIMO CON ELBOW METHOD
+
+    ## KMEANS inicializado con DATASET
     # Modelo
     kmeans = KMeansScratch(n_clusters=optimal_k_elbow, max_iter=100, init_method='dataset')
     labels = kmeans.fit(X)
