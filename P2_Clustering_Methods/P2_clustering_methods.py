@@ -5,7 +5,7 @@ import pandas as pd
 from mpl_toolkits.mplot3d import Axes3D
 from sklearn import datasets
 from sklearn.preprocessing import MinMaxScaler
-from sklearn.metrics import silhouette_score
+from sklearn.metrics import silhouette_score, calinski_harabasz_score, adjusted_rand_score
 from sklearn.cluster import KMeans
 from sklearn.cluster import DBSCAN
 from sklearn.mixture import GaussianMixture
@@ -246,3 +246,50 @@ if __name__ == "__main__":
 
     graph_gauss_mix_clustering(df_scaled, gauss_mixture, 3) # graficar clustering Gaussian Mixture
     
+
+    ## --- EVALUAR CLUSTERING --- ##
+
+    # SILHOUETTE SCORE
+    # KMeans
+    silhouette_kmeans = silhouette_score(df_scaled, kmeans_labels)
+    print(f"Silhouette Score KMeans: {silhouette_kmeans:.3f}")
+
+    # DBSCAN (sin ruido)
+    if len(set(dbscan_labels)) > 1:  # Necesita al menos 2 clusters
+        silhouette_dbscan = silhouette_score(df_scaled[dbscan_labels != -1], 
+                                        dbscan_labels[dbscan_labels != -1])
+        print(f"Silhouette Score DBSCAN: {silhouette_dbscan:.3f}")
+
+    # Gaussian Mixture
+    silhouette_gmm = silhouette_score(df_scaled, gauss_mix_labels)
+    print(f"Silhouette Score GMM: {silhouette_gmm:.3f}")
+
+
+    # CALINSKI-HARABASZ SCORE
+    # KMeans
+    ch_kmeans = calinski_harabasz_score(df_scaled, kmeans_labels)
+    print(f"Calinski-Harabasz KMeans: {ch_kmeans:.3f}")
+
+    # DBSCAN (sin ruido)
+    if len(set(dbscan_labels)) > 1:
+        ch_dbscan = calinski_harabasz_score(df_scaled[dbscan_labels != -1], 
+                                        dbscan_labels[dbscan_labels != -1])
+        print(f"Calinski-Harabasz DBSCAN: {ch_dbscan:.3f}")
+
+    # Gaussian Mixture
+    ch_gmm = calinski_harabasz_score(df_scaled, gauss_mix_labels)
+    print(f"Calinski-Harabasz GMM: {ch_gmm:.3f}")
+
+
+    # ADJUSTED RAND SCORE
+    # Usando las clases originales del dataset iris
+    true_labels = iris.target
+
+    ari_kmeans = adjusted_rand_score(true_labels, kmeans_labels)
+    print(f"Adjusted Rand Index KMeans: {ari_kmeans:.3f}")
+
+    ari_dbscan = adjusted_rand_score(true_labels, dbscan_labels)
+    print(f"Adjusted Rand Index DBSCAN: {ari_dbscan:.3f}")
+
+    ari_gmm = adjusted_rand_score(true_labels, gauss_mix_labels)
+    print(f"Adjusted Rand Index GMM: {ari_gmm:.3f}")
