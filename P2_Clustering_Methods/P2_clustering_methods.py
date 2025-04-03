@@ -232,16 +232,16 @@ if __name__ == "__main__":
     eps = .1 # dist vecindario
     min_samples = 8 # min muestras cluster
 
-    dbscan = DBSCAN(eps=eps, min_samples=min_samples)
-    dbscan.fit(df_scaled)
+    dbscan = DBSCAN(eps=eps, min_samples=min_samples) # inicializa DBSCAN
+    dbscan.fit(df_scaled) # ajusta modelo
     dbscan_labels = dbscan.labels_ # etiquetas del clustering
 
     graph_dbscan_clustering(df_scaled, dbscan) # graficar clustering DBSCAN
 
 
     ## --- GAUSSIAN MIXTURE CLUSTERING --- ##
-    gauss_mixture = GaussianMixture(n_components=3, covariance_type='full')
-    gauss_mixture.fit(df_scaled)
+    gauss_mixture = GaussianMixture(n_components=3, covariance_type='full') # inicializa Gaussian Mixture
+    gauss_mixture.fit(df_scaled) # ajusta modelo
     gauss_mix_labels = gauss_mixture.predict(df_scaled)
 
     graph_gauss_mix_clustering(df_scaled, gauss_mixture, 3) # graficar clustering Gaussian Mixture
