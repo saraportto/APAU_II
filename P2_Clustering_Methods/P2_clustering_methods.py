@@ -32,9 +32,9 @@ def graph_init_data(dataset, df_scaled):
     # por cada clase objetivo, grafica
     for target, color, name in zip([0, 1, 2], colors, class_names):
         subset = df_scaled[df_scaled['target'] == target] # filtra el dataset por clase
-        ax.scatter(subset['sepal length (cm)'], 
-                subset['petal length (cm)'], 
-                subset['petal width (cm)'], 
+        ax.scatter(subset['sepal length (scaled)'], 
+                subset['petal length (scaled)'], 
+                subset['petal width (scaled)'], 
                 c=color, 
                 label=name,
                 s=40)  # s es el tamaño de los puntos
@@ -128,9 +128,9 @@ def graph_dbscan_clustering(df_scaled, dbscan):
         else:
             subset = df_scaled[labels == label]
             ax.scatter(
-                subset['sepal length (cm)'],
-                subset['petal length (cm)'],
-                subset['petal width (cm)'],
+                subset['sepal length (scaled)'],
+                subset['petal length (scaled)'],
+                subset['petal width (scaled)'],
                 c=color,
                 label=f'Cluster {label}',
                 s=40,
@@ -168,9 +168,9 @@ def graph_gauss_mix_clustering(df_scaled, gmm, n_components):
     for cluster, color in zip(range(n_components), colors):
         subset = df_scaled[labels == cluster]
         ax.scatter(
-            subset['sepal length (cm)'],
-            subset['petal length (cm)'],
-            subset['petal width (cm)'],
+            subset['sepal length (scaled)'],
+            subset['petal length (scaled)'],
+            subset['petal width (scaled)'],
             c=color,
             label=f'Cluster {cluster}',
             s=40,
