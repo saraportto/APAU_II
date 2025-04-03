@@ -249,7 +249,7 @@ if __name__ == "__main__":
 
     ## --- EVALUAR CLUSTERING --- ##
 
-    # SILHOUETTE SCORE
+    ## SILHOUETTE SCORE ##
     # KMeans
     silhouette_kmeans = silhouette_score(df_scaled, kmeans_labels)
     print(f"Silhouette Score KMeans: {silhouette_kmeans:.3f}")
@@ -265,7 +265,7 @@ if __name__ == "__main__":
     print(f"Silhouette Score GMM: {silhouette_gmm:.3f}")
 
 
-    # CALINSKI-HARABASZ SCORE
+    ## CALINSKI-HARABASZ SCORE ##
     # KMeans
     ch_kmeans = calinski_harabasz_score(df_scaled, kmeans_labels)
     print(f"Calinski-Harabasz KMeans: {ch_kmeans:.3f}")
@@ -281,15 +281,18 @@ if __name__ == "__main__":
     print(f"Calinski-Harabasz GMM: {ch_gmm:.3f}")
 
 
-    # ADJUSTED RAND SCORE
-    # Usando las clases originales del dataset iris
+    ## ADJUSTED RAND SCORE ##
+    # Labels verdaderos (etiquetas originales)
     true_labels = iris.target
 
+    # KMeans
     ari_kmeans = adjusted_rand_score(true_labels, kmeans_labels)
     print(f"Adjusted Rand Index KMeans: {ari_kmeans:.3f}")
 
+    # DBSCAN
     ari_dbscan = adjusted_rand_score(true_labels, dbscan_labels)
     print(f"Adjusted Rand Index DBSCAN: {ari_dbscan:.3f}")
 
+    # Gaussian Mixture
     ari_gmm = adjusted_rand_score(true_labels, gauss_mix_labels)
     print(f"Adjusted Rand Index GMM: {ari_gmm:.3f}")
