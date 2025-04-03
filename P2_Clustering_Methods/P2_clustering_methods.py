@@ -32,9 +32,9 @@ def graph_init_data(dataset, df_scaled):
     # por cada clase objetivo, grafica
     for target, color, name in zip([0, 1, 2], colors, class_names):
         subset = df_scaled[df_scaled['target'] == target] # filtra el dataset por clase
-        ax.scatter(subset['sepal length (scaled)'], 
-                subset['petal length (scaled)'], 
-                subset['petal width (scaled)'], 
+        ax.scatter(subset['sepal length (cm)'], 
+                subset['petal length (cm)'], 
+                subset['petal width (cm)'], 
                 c=color, 
                 label=name,
                 s=40)  # s es el tamaño de los puntos
@@ -68,9 +68,9 @@ def graph_kmeans_clustering(df_scaled, clustering, n_clusters):
     for cluster, color in zip(range(n_clusters), colors):
         subset = df_scaled[labels == cluster]
         ax.scatter(
-            subset['sepal length (scaled)'],
-            subset['petal length (scaled)'],
-            subset['petal width (scaled)'],
+            subset['sepal length (cm)'],
+            subset['petal length (cm)'],
+            subset['petal width (cm)'],
             c=color,
             label=f'Cluster {cluster}',
             s=40,
@@ -168,9 +168,9 @@ def graph_gauss_mix_clustering(df_scaled, gmm, n_components):
     for cluster, color in zip(range(n_components), colors):
         subset = df_scaled[labels == cluster]
         ax.scatter(
-            subset['sepal length (scaled)'],
-            subset['petal length (scaled)'],
-            subset['petal width (scaled)'],
+            subset['sepal length (cm)'],
+            subset['petal length (cm)'],
+            subset['petal width (cm)'],
             c=color,
             label=f'Cluster {cluster}',
             s=40,
@@ -198,7 +198,7 @@ def graph_gauss_mix_clustering(df_scaled, gmm, n_components):
 ### ---- MAIN ---- ###
 if __name__ == "__main__":
 
-    ## Análisis dataset
+    ## Dataset Iris
     iris = datasets.load_iris() # carga datset
     df = pd.DataFrame(iris.data, columns=iris.feature_names) # dataframe
     df['target'] = iris.target # añade la variable objetivo
@@ -206,7 +206,7 @@ if __name__ == "__main__":
     ## Eliminamos sepal_width (variable menos relevante)
     df.drop(columns=['sepal width (cm)'], inplace=True)
 
-    ## Normalizar SOLO las características (excluyendo 'target')
+    ## Normaliza con MinMaxScaler SOLO las características (excluyendo 'target')
     scaler = MinMaxScaler()
     features = df.columns.drop('target')  # columnas a normalizar
     df_scaled = df.copy()  # copia del DataFrame original
