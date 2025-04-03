@@ -68,9 +68,9 @@ def graph_kmeans_clustering(df_scaled, clustering, n_clusters):
     for cluster, color in zip(range(n_clusters), colors):
         subset = df_scaled[labels == cluster]
         ax.scatter(
-            subset['sepal length (cm)'],
-            subset['petal length (cm)'],
-            subset['petal width (cm)'],
+            subset['sepal length (scaled)'],
+            subset['petal length (scaled)'],
+            subset['petal width (scaled)'],
             c=color,
             label=f'Cluster {cluster}',
             s=40,
@@ -116,9 +116,9 @@ def graph_dbscan_clustering(df_scaled, dbscan):
         if label == -1:  # Ruido
             subset = df_scaled[labels == label]
             ax.scatter(
-                subset['sepal length (cm)'],
-                subset['petal length (cm)'],
-                subset['petal width (cm)'],
+                subset['sepal length (scaled)'],
+                subset['petal length (scaled)'],
+                subset['petal width (scaled)'],
                 c='k',
                 marker='x',
                 label='Ruido',
