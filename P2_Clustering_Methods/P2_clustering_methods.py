@@ -1,21 +1,20 @@
 ### ---- IMPORTS ---- ###
-import folium
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import seaborn as sns
-import warnings
-from sklearn.cluster import KMeans
+from mpl_toolkits.mplot3d import Axes3D
+from sklearn import datasets
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import silhouette_score
-from kneed import KneeLocator
-from sklearn import datasets
-from mpl_toolkits.mplot3d import Axes3D
+from sklearn.cluster import KMeans
 from sklearn.cluster import DBSCAN
+from sklearn.mixture import GaussianMixture
+
 
 
 ### ---- RANDOM SEED ---- ###
 np.random.seed(42) # para reproducibilidad
+
 
 
 ### ---- FUNCIONES GRAFICAR ---- ###
@@ -30,7 +29,7 @@ def graph_init_data(dataset, df_scaled):
     colors = ['r', 'g', 'b'] # colores 
     class_names = dataset.target_names # nombres clases
 
-    # Por cada clase objetivo, grafica
+    # por cada clase objetivo, grafica
     for target, color, name in zip([0, 1, 2], colors, class_names):
         subset = df_scaled[df_scaled['target'] == target] # filtra el dataset por clase
         ax.scatter(subset['sepal length (cm)'], 
@@ -40,7 +39,7 @@ def graph_init_data(dataset, df_scaled):
                 label=name,
                 s=40)  # s es el tamaño de los puntos
 
-    # Info en la gráfica
+    #  info gráfica
     ax.set_xlabel('Sepal Length (scaled)') # eje x
     ax.set_ylabel('Petal Length (scaled)') # eje y
     ax.set_zlabel('Petal Width (scaled)') # eje z
@@ -50,10 +49,11 @@ def graph_init_data(dataset, df_scaled):
     plt.tight_layout() # ajusta el layout
     plt.show() # muestra la gráfica
 
-## GRAFICAR CLUSTERING
-def graph_clustering(df_scaled, clustering, n_clusters, clustering_method):
+
+## GRAFICAR CLUSTERING KMEANS
+def graph_kmeans_clustering(df_scaled, clustering, n_clusters):
     
-    # Labels y centroides
+    # labels y centroides
     labels = clustering.labels_
     centers = clustering.cluster_centers_
     
@@ -83,32 +83,34 @@ def graph_clustering(df_scaled, clustering, n_clusters, clustering_method):
         c='black', marker='X', s=200, label='Centroides'
     )
     
-    # Configuración del gráfico
+    # ejes, título y leyenda
     ax.set_xlabel('Sepal Length (scaled)')
     ax.set_ylabel('Petal Length (scaled)')
     ax.set_zlabel('Petal Width (scaled)')
-    ax.set_title(f'Clustering {clustering_method} ({n_clusters} clusters)')
+    ax.set_title(f'Clustering KMeans ({n_clusters} clusters)')
     ax.legend()
     
     plt.tight_layout()
     plt.show()
 
 
+## GRAFICAR CLUSTERING DBSCAN
 def graph_dbscan_clustering(df_scaled, dbscan):
-    # Obtener labels
+
+    # labels
     labels = dbscan.labels_
     
-    # Número de clusters (excluyendo el ruido)
+    # número de clusters (sin ruido)
     n_clusters = len(set(labels)) - (1 if -1 in labels else 0)
     
-    # Crear figura 3D
+    # figura 3d
     fig = plt.figure(figsize=(10, 8))
     ax = fig.add_subplot(111, projection='3d')
     
-    # Colores para los clusters + color especial para ruido
+    # colores (clusters y ruido)
     colors = ['r', 'g', 'b', 'c', 'm', 'y', 'orange'][:n_clusters]
     
-    # Graficar cada cluster y el ruido
+    # graficar cada cluster
     unique_labels = set(labels)
     for label, color in zip(unique_labels, colors + ['k']):
         if label == -1:  # Ruido
@@ -135,11 +137,57 @@ def graph_dbscan_clustering(df_scaled, dbscan):
                 alpha=0.7
             )
     
-    # Configuración del gráfico
+    # ejes, título y leyenda
     ax.set_xlabel('Sepal Length (scaled)')
     ax.set_ylabel('Petal Length (scaled)')
     ax.set_zlabel('Petal Width (scaled)')
     ax.set_title(f'Clustering DBSCAN ({n_clusters} clusters + ruido)')
+    ax.legend()
+    
+    plt.tight_layout()
+    plt.show()
+
+
+## GRAFICAR CLUSTERING GAUSSIAN MIXTURE
+def graph_gauss_mix_clustering(df_scaled, gmm, n_components):
+
+    # labels
+    labels = gmm.predict(df_scaled)
+    
+    # centroides (medias de los gaussianos)
+    centers = gmm.means_
+    
+    # figura 3d
+    fig = plt.figure(figsize=(10, 8))
+    ax = fig.add_subplot(111, projection='3d')
+    
+    # colores
+    colors = ['r', 'g', 'b', 'c', 'm', 'y', 'k'][:n_components]
+    
+    # graficar cada cluster
+    for cluster, color in zip(range(n_components), colors):
+        subset = df_scaled[labels == cluster]
+        ax.scatter(
+            subset['sepal length (cm)'],
+            subset['petal length (cm)'],
+            subset['petal width (cm)'],
+            c=color,
+            label=f'Cluster {cluster}',
+            s=40,
+            alpha=0.7
+        )
+    
+    # graficar centroides (medias de los gaussianos)
+    ax.scatter(
+        centers[:, 0], centers[:, 1], centers[:, 2],
+        c='black', marker='X', s=200, label='Centros Gaussianos'
+    )
+    
+    # ejes, título y leyenda
+    ax.set_xlabel('Sepal Length (scaled)')
+    ax.set_ylabel('Petal Length (scaled)')
+    ax.set_zlabel('Petal Width (scaled)')
+    ax.set_title(f'Clustering GaussianMixture ({n_components} componentes)')
     ax.legend()
     
     plt.tight_layout()
@@ -175,18 +223,26 @@ if __name__ == "__main__":
     ## --- KMEANS CLUSTERING --- ##
     kmeans = KMeans(n_clusters=3, init='k-means++') # inicialización con k-means++
     kmeans.fit(df_scaled) # ajusta modelo
-    graph_clustering(df_scaled, kmeans, 3, 'KMeans') # graficar clustering KMeans
+    kmeans_labels = kmeans.labels_ # etiquetas del clustering
+
+    graph_kmeans_clustering(df_scaled, kmeans, 3) # graficar clustering KMeans
 
 
     ## --- DBSCAN CLUSTERING --- ##
-    eps = .1
-    min_samples = 8
+    eps = .1 # dist vecindario
+    min_samples = 8 # min muestras cluster
 
     dbscan = DBSCAN(eps=eps, min_samples=min_samples)
     dbscan.fit(df_scaled)
+    dbscan_labels = dbscan.labels_ # etiquetas del clustering
+
     graph_dbscan_clustering(df_scaled, dbscan) # graficar clustering DBSCAN
 
 
     ## --- GAUSSIAN MIXTURE CLUSTERING --- ##
-    pass
+    gauss_mixture = GaussianMixture(n_components=3, covariance_type='full')
+    gauss_mixture.fit(df_scaled)
+    gauss_mix_labels = gauss_mixture.predict(df_scaled)
+
+    graph_gauss_mix_clustering(df_scaled, gauss_mixture, 3) # graficar clustering Gaussian Mixture
     
