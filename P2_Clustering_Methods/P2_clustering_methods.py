@@ -250,6 +250,7 @@ if __name__ == "__main__":
     ## --- EVALUAR CLUSTERING --- ##
 
     ## SILHOUETTE SCORE ##
+    print("\n\n--- SILHOUETTE SCORE ---\n")
     # KMeans
     silhouette_kmeans = silhouette_score(df_scaled, kmeans_labels)
     print(f"Silhouette Score KMeans: {silhouette_kmeans:.3f}")
@@ -266,6 +267,7 @@ if __name__ == "__main__":
 
 
     ## CALINSKI-HARABASZ SCORE ##
+    print("\n\n--- CALINSKI-HARABASZ SCORE ---\n")
     # KMeans
     ch_kmeans = calinski_harabasz_score(df_scaled, kmeans_labels)
     print(f"Calinski-Harabasz KMeans: {ch_kmeans:.3f}")
@@ -282,6 +284,7 @@ if __name__ == "__main__":
 
 
     ## ADJUSTED RAND SCORE ##
+    print("\n\n--- ADJUSTED RAND SCORE ---\n")
     # Labels verdaderos (etiquetas originales)
     true_labels = iris.target
 
