@@ -116,9 +116,9 @@ def graph_dbscan_clustering(df_scaled, dbscan):
         if label == -1:  # Ruido
             subset = df_scaled[labels == label]
             ax.scatter(
-                subset['sepal length (scaled)'],
-                subset['petal length (scaled)'],
-                subset['petal width (scaled)'],
+                subset['sepal length (cm)'],
+                subset['petal length (cm)'],
+                subset['petal width (cm)'],
                 c='k',
                 marker='x',
                 label='Ruido',
@@ -128,9 +128,9 @@ def graph_dbscan_clustering(df_scaled, dbscan):
         else:
             subset = df_scaled[labels == label]
             ax.scatter(
-                subset['sepal length (scaled)'],
-                subset['petal length (scaled)'],
-                subset['petal width (scaled)'],
+                subset['sepal length (cm)'],
+                subset['petal length (cm)'],
+                subset['petal width (cm)'],
                 c=color,
                 label=f'Cluster {label}',
                 s=40,
