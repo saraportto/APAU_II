@@ -11,7 +11,7 @@ SAVE_TOTAL_LIMIT=2
 LOGGING_STEPS=100
 LOAD_BEST_MODEL_AT_END=True
 SAVE_STRATEGY="no"
-TRAIN_FILE="data/ner-es.train.filled.json"
+TRAIN_FILE="data/ner-es.train.json"
 VALIDATION_FILE="data/ner-es.valid.json"
 ###########################################################################
 
